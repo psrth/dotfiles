@@ -1,0 +1,7 @@
+[user]
+	name = psrth
+	email = psrthsharma@gmail.com
+[http]
+	postBuffer = 157286400
+[credential]
+	helper = osxkeychain

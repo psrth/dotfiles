@@ -1,0 +1,21 @@
+# Appearance
+theme = TokyoNight Night
+font-family = "MesloLGS Nerd Font"
+font-size = 14
+
+# Window
+window-padding-x = 20
+
+window-height = 40
+window-width = 120
+macos-titlebar-style = tabs
+
+# Behavior
+cursor-style = block
+cursor-style-blink = false
+shell-integration = zsh
+
+# background
+background-opacity = 0.95
+background-blur-radius = 20
+keybind = shift+enter=text:\x1b\r

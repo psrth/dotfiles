@@ -1,0 +1,79 @@
+# ~/.config/starship.toml
+
+# -------------------------
+# (1) global settings
+# -------------------------
+add_newline = true
+command_timeout = 1000
+
+format = """
+\n$directory\
+$git_branch\
+$git_status\
+$python\
+$nodejs\
+$golang\
+$line_break\
+$character"""
+
+
+# -------------------------
+# (2) user profiles
+# -------------------------
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[username]
+show_always = false
+
+[hostname]
+ssh_only = true
+
+
+# -------------------------
+# (3) directory
+# -------------------------
+[directory]
+style = "bold blue"
+truncation_length = 3
+truncation_symbol = '…/'
+truncate_to_repo = false
+
+
+# -------------------------
+# (4) git
+# -------------------------
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+[git_status]
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+
+
+# -------------------------
+# 5. language decorators
+# ------------------------- 
+[python]
+symbol = "python-"
+style = "green"
+[nodejs]
+symbol = "node-"
+style = "yellow"
+[golang]
+symbol = "go-"
+style = "cyan"
+[package]
+disabled = true
+
+
+# -------------------------
+# (6) prompt
+# -------------------------
+[character]
+error_symbol = "[✕](bold red)"
