@@ -58,6 +58,11 @@ fi
 export GOPATH="$HOME/go"                         
 export PATH="$PATH:$GOPATH/bin"
 
+# node version manager
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
 # -------------------------
 # 6. ALIASES
 # shortcuts for common commands.
@@ -89,6 +94,16 @@ alias reload="source ~/.zshrc"
 # 7. FUNCTIONS
 # custom functions.
 # -------------------------
+# npm guard - recommend bun or pnpm instead
+npm() {
+  if [[ "$1" == "install" || "$1" == "i" ]] && [[ "$EUID" -ne 0 ]]; then
+    echo "⚠️ Are you sure you want to use npm?"
+    echo "   This system recommends using bun or pnpm instead."
+    echo "   Use 'sudo npm $@' to bypass this warning."
+    return 1
+  fi
+  command npm "$@"
+}
 
 
 # -------------------------
@@ -98,6 +113,16 @@ alias reload="source ~/.zshrc"
 # zsh plugins
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# fzf keybindings and completion
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# zoxide (better cd)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
 
 # starship prompt
 eval "$(starship init zsh)"

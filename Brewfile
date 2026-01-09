@@ -11,6 +11,21 @@ brew "mkcert"
 brew "starship"
 brew "uv"
 
+# javascript/node
+brew "node"
+brew "nvm"
+brew "pnpm"
+
+# services
+brew "redis"
+
+# cli tools
+brew "bat"       
+brew "fd"
+brew "fzf"       
+brew "trash"
+brew "zoxide"
+
 # zsh
 brew "zsh"
 brew "zsh-autosuggestions"
