@@ -2,7 +2,7 @@
 
 [@psrth](https://github.com/psrth)'s opinionated dotfiles / machine setup for macOS.
 
-![setup](https://i.imgur.com/fwbDh1M.png)
+![setup](screenshot.png)
 
 ## about
 
@@ -49,3 +49,34 @@ the setup script will:
 2. if you only want the terminal setup, you can just copy the `ghostty_config`,`starship.toml`, and snippets from the `.zshrc` file.
 3. the setup script is a destructive action meant only for fresh machines — it will overwrite your existing dotfiles. make sure to backup before running the script.
 4. that being said — this setup is a breeze, takes 5 mins, will never use more than a couple gigs of storage, and will never slow down your machine. if you're brave enough, go for it.
+
+## cheatsheet
+
+```bash
+# navigation
+cd <dir>            # smart jump (zoxide)
+z <query>           # jump to frecent dir
+c                   # open cursor in cwd
+
+# files
+ls                  # list (eza)
+ll                  # list detailed
+lt                  # tree view
+bat <file>          # cat with syntax highlighting
+fd <pattern>        # find files
+trash <file>        # safe delete
+
+# git
+g                   # git
+fzf                 # fuzzy find (ctrl+r history, ctrl+t files)
+
+# python (all via uv)
+python / py         # uv run python
+pip                 # uv pip
+
+# config
+zconfig             # edit .zshrc
+reload              # source .zshrc
+
+# npm is blocked — use bun or pnpm
+```

@@ -67,10 +67,19 @@ export NVM_DIR="$HOME/.nvm"
 # 6. ALIASES
 # shortcuts for common commands.
 # -------------------------
+# add smart home utils to path
+export PATH="$HOME/Development/home:$PATH"
+
 # force python to use uv
-alias python="uv run python"  
-alias py="uv run python"      
-alias pip="uv pip"            
+alias python="uv run python"
+alias py="uv run python"
+alias pip="uv pip"  
+
+# cd utility
+alias cd="z"
+
+# cursor
+alias c="cursor ."
 
 # git
 alias g="git"
@@ -105,7 +114,6 @@ npm() {
   command npm "$@"
 }
 
-
 # -------------------------
 # 8. PROMPT
 # initializing the prompt last so it can detect all tools/languages.
@@ -126,3 +134,6 @@ fi
 
 # starship prompt
 eval "$(starship init zsh)"
+
+# bun completions
+[ -s "/Users/psrth/.bun/_bun" ] && source "/Users/psrth/.bun/_bun"

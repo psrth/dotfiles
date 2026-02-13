@@ -35,13 +35,13 @@
   "print.folder.maxLines": 1200,
   "print.folder.maxFiles": 30,
   "print.folder.includeFileList": false,
-  "cursor.cpp.disabledLanguages": [
-    "plaintext",
-    "typescriptreact"
-  ],
+  "cursor.cpp.disabledLanguages": ["plaintext", "typescriptreact"],
   "typescript.updateImportsOnFileMove.enabled": "always",
   "extensions.ignoreRecommendations": true,
   "notebook.output.wordWrap": true,
-  "notebook.cellFocusIndicator": "border"
+  "notebook.cellFocusIndicator": "border",
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.tsserver.web.projectWideIntellisense.enabled": false
 }
-
