@@ -3,11 +3,13 @@
 # -------------------------
 # (1) global settings
 # -------------------------
-add_newline = true
+# the blank line between prompts comes from a precmd hook in ~/.zshrc —
+# add_newline can't skip the first prompt of a session in zsh, a hook can
+add_newline = false
 command_timeout = 1000
 
 format = """
-\n$directory\
+$directory\
 $git_branch\
 $git_status\
 $python\
