@@ -46,6 +46,14 @@ ln -s "$DOTFILES_DIR/ghostty_config" "$HOME/.config/ghostty/config"
 ln -s "$DOTFILES_DIR/cursor/settings.json" "$HOME/Library/Application Support/Cursor/User/settings.json"
 ln -s "$DOTFILES_DIR/cursor/keybindings.json" "$HOME/Library/Application Support/Cursor/User/keybindings.json"
 
+# symlink claude code skills
+mkdir -p "$HOME/.claude/skills"
+for skill in "$DOTFILES_DIR"/skills/*/; do
+    name="$(basename "$skill")"
+    rm -rf "$HOME/.claude/skills/$name"
+    ln -s "${skill%/}" "$HOME/.claude/skills/$name"
+done
+
 # set default shell
 echo "(6) setting default shell..."
 if [ "$SHELL" != "$(which zsh)" ]; then
