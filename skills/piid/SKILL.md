@@ -1,6 +1,6 @@
 ---
 name: piid
-description: project intent and implementation doc — a deep interview that produces a single build spec — problem, decisions, codebase context, and ordered implementation steps — exhaustive enough for a fresh model to implement blind. Invoke with /piid before building anything non-trivial.
+description: project intent and implementation doc — a deep interview that produces a single build spec exhaustive enough for a fresh model to implement blind. Invoke with /piid before building anything non-trivial.
 disable-model-invocation: true
 ---
 

@@ -1,37 +1,28 @@
 ---
 name: push-to-git
-description: Ship the current work — terse Conventional-Commits message, push, PR when needed, go-live steps derived from the diff. Fully automatic, no confirmation stops. Use when the user invokes /push-to-git or says "commit this", "push this up", "ship it", "make a PR".
+description: Ship the current work — commit, push, PR when needed. Use when the user invokes /push-to-git or says "ship it" / "commit this", or when finished work is ready to go out.
 ---
 
-# push-to-git — working tree → pushed, PR'd, go-live steps written
+# push-to-git — working tree → confirmed plan → pushed
 
-Fully automatic end to end: no "shall I?" pauses. The one hard stop: working-tree contents that are clearly not part of the current work (unrelated files, secrets, giant binaries) get excluded and called out — never committed silently.
+One stop, then end to end: propose the full plan, get a single go, execute without further pauses. The hard stop regardless: working-tree contents that are clearly not part of the current work (unrelated files, secrets, giant binaries) get excluded and called out — never committed silently.
 
 ## 1. Understand the diff
 
----
+- Changes from this session → proceed. Picking up from fresh context → `git status` + `git diff` first; understand what the change _does_ before writing a word about it.
 
-- If picking up from fresh context, `git status` + `git diff`. Understand what the change _does_ before writing a word about it.
+## 2. Propose the plan — the one stop
 
-- If the changes were part of this session, you may proceed.
+Present in a single message, then wait for the go. The user edits any part by name; a bare yes executes everything exactly as shown.
 
-## 2. Branch
+- **Target** — branch + PR by default; a repo whose main history is linear direct-to-main (no merge commits) gets a commit straight to main and no PR. Say which and why.
+- **Branch name** (when branching) — `<type>/<high-level-summary>`, e.g. `feat/new-user-profile-endpoint`. Types: `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`, `build`, `ci`, `style`, `revert`.
+- **Commit message(s)** — full text, per the rules below. Two clearly independent changes → two commits.
+- **Exclusions** — anything in the tree being left out, named.
 
----
-
-- <type>/<high-level-summary>
-- Types: `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`, `build`, `ci`, `style`, `revert`
-
-### Example
-
-Diff: new endpoint for user profile with body: `feat/new-user-profile-endpoint`
-
-## 3. Commits
-
----
+## 3. Commit
 
 - Stage the related work including untracked files that belong to it; exclude debris (scratch files, `.env`, logs).
-- Two clearly independent changes → two commits.
 
 ### Rules
 
@@ -47,6 +38,7 @@ Diff: new endpoint for user profile with body: `feat/new-user-profile-endpoint`
 
 - Skip entirely when subject is self-explanatory
 - Add body only for: non-obvious _why_, breaking changes, migration notes, linked issues
+- Always include body for: breaking changes, security fixes, data migrations, anything reverting a prior commit — future debuggers need the context
 - Wrap at 72 chars
 - Bullets `-` not `*`
 - Reference issues/PRs at end: `Closes #42`, `Refs #17`
@@ -55,7 +47,7 @@ Diff: new endpoint for user profile with body: `feat/new-user-profile-endpoint`
 
 - "This commit does X", "I", "we", "now", "currently" — the diff says what
 - "As requested by..." — use Co-authored-by trailer
-- "Generated with Claude Code" or any AI attribution.
+- "Generated with Claude Code" or any AI attribution
 - Emoji
 - Restating the file name when scope already says it
 
@@ -86,16 +78,10 @@ Diff: breaking API change
   before 2026-06-01. Old route returns 410 after that date.
   ```
 
-## Auto-Clarity
+## 4. Push & PR
 
-Always include body for: breaking changes, security fixes, data migrations, anything reverting a prior commit. Never compress these into subject-only — future debuggers need the context.
-
-## 3. Create the PR
-
----
-
-1. **Push** with `-u` to origin.
-2. **PR — when needed.** No open PR for the branch and `gh` works → create one (note: the GitHub repo name may differ from the local dir — trust `git remote -v`). PR exists → push updates; comment only if the change alters the PR's story. Because this skill ships without a human look at the message, **open the PR body.**
+1. **Push** with `-u` to origin. Main-target repos stop here.
+2. **PR — when needed.** No open PR for the branch and `gh` works → create one (note: the GitHub repo name may differ from the local dir — trust `git remote -v`). PR exists → push updates; comment only if the change alters the PR's story. The PR body ships without a human look — **open the PR body**.
 3. **PR Title: <type>: human description — feat: start tracking app uninstall events (#3013)**
 4. **PR Report:** context, change/fix, go live and monitoring plan, notes (pending, risks, etc)
 
