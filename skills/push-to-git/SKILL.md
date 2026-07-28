@@ -1,6 +1,6 @@
 ---
 name: push-to-git
-description: Ship the current work — commit, push, PR when needed. Use when the user invokes /push-to-git or says "ship it" / "commit this", or when finished work is ready to go out.
+description: Ship the current work — terse commits, push, PR when needed. Use when the user invokes /push-to-git or says "ship it" / "commit this", or when finished work is ready to go out.
 ---
 
 # push-to-git — working tree → confirmed plan → pushed
@@ -39,6 +39,8 @@ Present in a single message, then wait for the go. The user edits any part by na
 - Skip entirely when subject is self-explanatory
 - Add body only for: non-obvious _why_, breaking changes, migration notes, linked issues
 - Always include body for: breaking changes, security fixes, data migrations, anything reverting a prior commit — future debuggers need the context
+- Hard cap 4 lines. Compress: a measurement is one line ("13 MB → 131 kB per lane"), a behavior delta is one line. Written for `git blame` archaeology, not for the reviewer.
+- Detail has one home: the investigation story, full numbers, and open items go in the PR report — a paragraph never appears in both
 - Wrap at 72 chars
 - Bullets `-` not `*`
 - Reference issues/PRs at end: `Closes #42`, `Refs #17`
@@ -50,6 +52,7 @@ Present in a single message, then wait for the go. The user edits any part by na
 - "Generated with Claude Code" or any AI attribution
 - Emoji
 - Restating the file name when scope already says it
+- The investigation narrative — that's the PR report's job
 
 ### Examples
 
