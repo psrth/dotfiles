@@ -1,80 +1,105 @@
 ---
 name: piid
-description: project intent and implementation doc — a deep interview that produces a single build spec exhaustive enough for a fresh model to implement blind. Invoke with /piid before building anything non-trivial.
+description: Project Intent and Implementation Document — turn a basic prompt (business ask, bug report, user feedback, feature idea) through interview, analysis, and review into a detailed ticket that a new developer can execute without further input. Invoke with /piid <request>.
 disable-model-invocation: true
 ---
 
-# piid — interview until aligned, then write the whole build
+# piid — the ticket factory
 
-Deliverable: `piid-<slug>.md` in cwd — a **Project Intent and Implementation Document**, in two components:
+Raw input in — a business request from a PM, user feedback, a bug report, a developer's feature idea. Ticket out: `piid-<slug>.md` in cwd, built from this codebase, senior-developer judgement, and the tools at hand, then handed to a **fresh but smart agent** who executes it without any further input.
 
-1. **Project Intent** — interview the user to establish the _why_ and the _what_. Go as deep as possible.
-2. **Project Implementation** — with the why and the what settled, detail the _how_, surfacing the important questions and trade-offs before outlining a scaffold someone can build from.
+The agent settles every craft question. 
+1. *Fresh*: they weren't in this conversation and hold no mental model of this area — point them at exactly the files, queries, and logs that build one. 
+2. *Smart*: they can write the code themselves — the doc is a guiding hand, not the diff dumped into markdown. Write down what they can't derive (context, decisions, pointers); be helpful when you'd err on the side of specificity (code snippets); leave to them what they can (the code).
 
-`references/template.md` is the target shape. Read it first: the interview exists to fill it.
+**Hard gate:** no implementation or code edits this session — the deliverable is the document.
 
-**Hard gate:** no implementation, scaffolding, or code edits this session. The only deliverable is an approved document.
+## Step 1: Understand
 
-## Two readers
+Too vague to search on? Ask right away to narrow the radius. Otherwise gather alone — this pass exists to build *your* mental model, so read the related code yourself rather than delegating to subagents. Done when you can name the part of the codebase involved and how a request moves through it. 
 
-- **The user** approves intent. Their attention is the scarce resource.
-- **A blind implementer** — a fresh model holding this document and the repo, nothing else. It was not in the interview, has not read the code, and cannot ask you anything.
+If the request embeds a preliminary "how", note it and assume for now that it's wrong. 
 
-Blind is the demanding reader, and it settles most questions of craft on its own: whatever it would have to guess is whatever you have to write down.
+## Step 2: Interview — intent only
 
-## Ask intent · look up facts · decide mechanics
+Short and behavioural. Number the questions, attach your recommended answer to each, and hold numbers stable across rounds — the user answers by number, inline, out of order. Establish:
 
-Folding implementation into intent multiplies the open decisions, and most of them are not the user's. Asking anyway turns an interview into an interrogation.
+- the exact problem, anecdotally
+- why — the real-world, business reason this needs fixing
+- the intended outcome
 
-- **Intent → ask.** Anything with a product, cost, risk, or preference consequence. Soft vs hard delete. Whether v2 exists. What the user sees when it fails.
-- **Facts → look up.** Current behavior, where things live, existing patterns, feasibility. Recon settles these.
-- **Mechanics → decide and log.** Names, file placement, argument order, test layout. Match the surrounding code, record it _(author's call)_, and surface the set at the alignment check as a list the user can veto.
+Facts are never interview questions — look them up. Done when problem, why, and goal are stated in the user's own terms.
 
-## 1 · Recon
+## Step 3: Preliminary solution
 
-Map the ground before the first question — `Explore` subagents for breadth. Complete when you can name:
+Form a theory of what to do. Your first answer is usually wrong, so attack it:
 
-- the call path through the area, `path:line` at each hop
-- **the pattern to mirror** — the closest existing feature. The highest-value thing you will find; the implementer copies it instead of inventing.
-- the data model as it stands: types, nullability, indexes, migration conventions
-- every caller in the blast radius
-- test conventions, and the exact build / test / lint / migrate commands as the repo spells them
+- trace the flow end to end
+- spin up subagents to validate against live code and data rather than memory: does the theory survive contact? how does it behave at real volumes? which edge cases exist?
+- keep the back-of-mind bias **lazy** — the laziest solution that actually works: does this need to exist at all? already in the codebase → reuse before writing; stdlib, native platform, or an installed dependency before new code; the shortest diff that works.
 
-This lands in the document near-verbatim. Recon you keep to yourself is recon you wasted.
+Done when the theory has survived validation or been corrected by it, and every finding that moved it is recorded.
 
-## 2 · Interview
+## Step 4: Review with the user
 
-Number every question and hold the numbers stable across rounds — the user answers by number, inline, out of order. Each question carries your recommended answer and the reason for it: _"Recommend 30-day soft delete — matches how posts already work (`models/post.py:88`)."_
+The deep checkpoint, in chat:
 
-Order beats coverage. Split the scope first if this is really several projects, then problem, then approach — and hang everything else off the approach, since locking the shape early makes every later question cheaper.
+- **Blocking** — decisions you can't default: numbered, each with options and a recommendation. These need answers.
+- **Non-blocking** — everything you defaulted: one line each stating the sensible default. The user vetoes what they disagree with; otherwise assume good to go.
+- Follow-ups that emerged from validation.
 
-Second-order thinking throughout: "implement X" is a hypothesis about the solution, and the interview is what tests it.
+Done when every blocking question is answered and the non-blocking list has had its veto pass.
 
-Restate locked vs open after each round. Flag contradictions rather than absorbing them. "Just pick" → pick, mark _(defaulted)_, move on.
+## Step 5: Plan
 
-The interview ends when Open Questions is empty, not at a question quota.
+Decisions locked — plan the implementation, refining or outright rewriting the step-3 theory. Surgical and lazy, harder than before: the plan is the shortest ordered path to the goal. Done when each step is small enough to hand to one agent and check.
 
-## 3 · Write
+## 6 · Write, then cold re-read
 
-Skeleton and craft: `references/template.md`.
+Write `piid-<slug>.md` to cwd in this shape — every section lean, §5 only if it has content:
 
-The document carries two jobs at once — it reads as a story front to back, and it works as a step-by-step guide with a terminal open. Carry the reasoning as well as the verdicts: a reader who disagrees should be able to see what was already considered.
+```markdown
+# PIID — One Line Title
+> **Source request:** <the raw input, verbatim or tightly paraphrased> <requester, date>
 
-## 4 · Blind review
+# 1. Context
+## Problem
+## Why this needs a fix
+## Goal
 
-Before the user sees anything, re-read the document cold, in character as the implementer. Done when:
+# 2. References & Blast Radius
+Everything the agent reads, runs, and inspects before touching code. Order it
+the way the system moves — a request path, a user journey, a parameter passing
+through functions — never alphabetically.
 
-- every noun resolves — no name, shape, location, or order left to invent
-- every path, symbol, and command named is verified present in the repo
-- step N depends only on steps 1..N-1
-- every line reads exactly one way
-- later sections agree with earlier decisions
-- Open Questions is empty, or honestly populated
+- <one-line description> [path:line where it matters]
+- <query to run, log to read>
 
-Guess points are defects. Fix them inline. This pass is not a skim.
+The closest existing pattern to mirror is the highest-value pointer here.
 
-## 5 · Align, then ship
+Footer: date, time, last commit hash, and the line: "If repo behavior has
+drifted since this commit, stop, flag it to the user, and rework this piid."
 
-Present the decision log, the _(author's call)_ list to veto, and five lines on what gets built. On confirmation write the file, and point the user at it as the thing to hand the implementer. Wobble is an open question — loop back to its cluster.
+# 3. Analysis
+## Solution
+The settled solution, as a bulleted list — what and why, not yet step-by-step.
 
-A document a fresh model executes end to end without asking you anything is done. One that reads well and hides a TBD is not.
+## Iterations
+**Preliminary solution:** what we thought at the start, 2–3 lines.
+**Findings:** one `<finding>: <decision>` line each — concise, but enough
+context that the agent never wonders whether it was thought through.
+
+# 4. Implementation Instructions
+Structure as delegation: different codebases → separate agents; same codebase
+with narrow parallelizable scopes → subagents; otherwise one agent, in order.
+
+Steps ordered and dependency-correct, each self-contained and verifiable.
+Snippets where they disambiguate; the diff itself is the agent's job.
+
+# 5. Miscellaneous
+Only if it has content. Future ideas and todos (noted, nothing actionable this
+turn), edge cases worth a line, blocks to go-live (e.g. awaiting another
+pipeline).
+```
+
+Then the cold re-read: in character as the agent — this document, the repo, nothing else. Any point where they'd have to come back and ask is a defect; fix it inline. Done when the agent proceeds start to finish alone.
