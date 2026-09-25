@@ -1,6 +1,6 @@
 [user]
 	name = psrth
-	email = psrthsharma@gmail.com
+	email = git@psrth.sh
 # github auth via gh (one token, managed by `gh auth login`). the empty helper
 # clears homebrew git's default osxkeychain helper for these hosts.
 [credential "https://github.com"]
