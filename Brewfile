@@ -1,80 +1,103 @@
 # Brewfile
+# install: brew bundle --file=~/.dotfiles/Brewfile
+# apps with no brew/mas source are listed in README.md (manual installs)
+
+# taps
+tap "openclaw/tap"
 
 # core utilities
 brew "btop"
-brew "cloud-sql-proxy"
-brew "eza"
 brew "ffmpeg"
 brew "git"
 brew "go"
-brew "mkcert"
+brew "mas"
 brew "starship"
 brew "uv"
 
 # javascript/node
-brew "node"
 brew "nvm"
+brew "bun"
 brew "pnpm"
 
-# services
+# databases & services
+brew "cloud-sql-proxy"
+brew "postgresql@18"
+brew "pgvector"
 brew "redis"
 
 # cli tools
-brew "bat"       
-brew "fd"
-brew "fzf"       
+brew "bat"
+brew "fzf"
+brew "gh"
+brew "jq"
+brew "ripgrep"
+brew "tmux"
 brew "trash"
+brew "tree"
 brew "zoxide"
+
+# media & files
+brew "poppler"
+
+# misc
+brew "mole"
+brew "opencode"
+brew "openclaw/tap/gogcli"
 
 # zsh
 brew "zsh"
 brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
-# cask apps
-cask "claude-code"
+# fonts
 cask "font-meslo-lg-nerd-font"
-cask "gcloud-cli"
-cask "mounty"
-cask "ngrok"
-cask "brave-browser"
+
+# dev
 cask "bruno"
-cask "cursor"
-cask "figma"
+cask "cmux"
+cask "conductor"
+cask "dbeaver-community"
+cask "docker-desktop"
+cask "gcloud-cli"
 cask "ghostty"
+cask "redis-insight"
+cask "zed"
+
+# ai
+cask "chatgpt"
+cask "claude"
+cask "claude-code@latest"
+cask "codex"
+
+# productivity
+cask "brave-browser"
+cask "google-drive"
 cask "notion-calendar"
 cask "obsidian"
 cask "raycast"
-cask "spotify"
-cask "surfshark"
-cask "zoom"
-cask "docker"
+cask "slack"
+cask "superhuman"
 
-# cursor extensions
-vscode "bradlc.vscode-tailwindcss"
-vscode "charliermarsh.ruff"
-vscode "dbaeumer.vscode-eslint"
-vscode "donjayamanne.githistory"
-vscode "eamodio.gitlens"
-vscode "esbenp.prettier-vscode"
-vscode "golang.go"
-vscode "mikestead.dotenv"
-vscode "ms-azuretools.vscode-docker"
-vscode "ms-python.debugpy"
-vscode "ms-python.python"
-vscode "ms-toolsai.jupyter"
-vscode "ms-toolsai.jupyter-renderers"
-vscode "ms-toolsai.vscode-jupyter-cell-tags"
-vscode "ms-toolsai.vscode-jupyter-slideshow"
-vscode "ms-vscode-remote.remote-ssh"
-vscode "ms-vscode-remote.remote-ssh-edit"
-vscode "ms-vscode.makefile-tools"
-vscode "ms-vscode.remote-explorer"
-vscode "pdconsec.vscode-print"
-vscode "ritwickdey.liveserver"
-vscode "robertz.code-snapshot"
-vscode "twxs.cmake"
-vscode "unifiedjs.vscode-mdx"
-vscode "xabikos.javascriptsnippets"
-vscode "xyc.vscode-mdx-preview"
-vscode "zhuangtongfa.material-theme"
+# design & media
+cask "cleanshot"
+cask "figma"
+cask "paper-design"
+cask "spotify"
+
+# system & network
+cask "mounty"
+cask "secretive"
+cask "surfshark"
+cask "tailscale-app"
+cask "zoom"
+
+# app store
+mas "Amphetamine", id: 937984704
+mas "Klack", id: 6446206067
+
+# uv tools
+uv "claude-swap"
+uv "ruff"
+
+# go packages
+go "golang.org/x/tools/gopls"
