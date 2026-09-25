@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# One-way backup of Claude Code and Codex state (transcripts, history,
+# settings, memory) into iCloud Drive. Never deletes from the backup, so transcripts cleaned up
+# locally stay archived. Run daily by launchd (see launchd/ and setup.sh).
+#
+# restore: setup.sh does this automatically on a fresh machine; manually:
+#   rsync -a "$DEST/claude/" ~/.claude/ && cp "$DEST/claude.json" ~/.claude.json
+#   rsync -a "$DEST/codex/" ~/.codex/
+set -euo pipefail
+
+DEST="$HOME/Library/Mobile Documents/com~apple~CloudDocs/agents"
+mkdir -p "$DEST"
+
+# caches, logs, and runtime state rebuild themselves; skills are symlinks
+# managed by ~/.dotfiles; plugins reinstall from settings.json
+rsync -a --no-specials --no-devices \
+  --exclude 'cache/' --exclude 'debug/' --exclude 'telemetry/' \
+  --exclude 'shell-snapshots/' --exclude 'session-env/' --exclude 'paste-cache/' \
+  --exclude 'daemon/' --exclude 'daemon-*' --exclude 'downloads/' \
+  --exclude 'statsig/' --exclude '*-cache.json' --exclude 'plugins/' \
+  --exclude 'skills/' --exclude '*.bak*' \
+  "$HOME/.claude/" "$DEST/claude/"
+
+cp "$HOME/.claude.json" "$DEST/claude.json"
+
+# codex: logs, plugins, caches, and downloaded tooling rebuild themselves;
+# auth.json is left out on purpose (re-login on a new machine)
+if [ -d "$HOME/.codex" ]; then
+  rsync -a --no-specials --no-devices \
+    --exclude 'logs_*.sqlite*' --exclude 'log/' --exclude '.tmp/' --exclude 'tmp/' \
+    --exclude 'cache/' --exclude 'plugins/' --exclude 'computer-use/' \
+    --exclude 'vendor_imports/' --exclude 'node_repl/' --exclude 'ipc/' --exclude 'models_cache.json' \
+    --exclude 'auth.json' --exclude '*.bak' --exclude '*.lock' --exclude '*-locks/' \
+    "$HOME/.codex/" "$DEST/codex/"
+fi
+date -u +%Y-%m-%dT%H:%M:%SZ > "$DEST/last-backup.txt"
