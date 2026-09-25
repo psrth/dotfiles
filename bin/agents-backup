@@ -33,4 +33,21 @@ if [ -d "$HOME/.codex" ]; then
     --exclude 'auth.json' --exclude '*.bak' --exclude '*.lock' --exclude '*-locks/' \
     "$HOME/.codex/" "$DEST/codex/"
 fi
-date -u +%Y-%m-%dT%H:%M:%SZ > "$DEST/last-backup.txt"
+# icloud makes "name 2.ext" conflict copies when two versions collide (e.g.
+# two macs syncing at once); drop them unless a real file has that name
+prune_conflicts() {
+  local src="$1" dst="$2"
+  find "$dst" -depth \( -name '* [2-9]' -o -name '* [2-9].*' \) -print0 2>/dev/null |
+    while IFS= read -r -d '' f; do
+      [ -e "$src/${f#"$dst"/}" ] || rm -rf "$f"
+    done
+}
+prune_conflicts "$HOME/.claude" "$DEST/claude"
+prune_conflicts "$HOME/.codex" "$DEST/codex"
+
+# manifest: setup.sh verifies a restore against these counts
+{
+  echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "claude_transcripts=$(find "$DEST/claude/projects" -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' ')"
+  echo "codex_sessions=$(find "$DEST/codex/sessions" -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' ')"
+} > "$DEST/last-backup.txt"
