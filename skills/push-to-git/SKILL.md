@@ -7,6 +7,8 @@ description: Ship the current work — terse commits, push, PR when needed. Use 
 
 One stop, then end to end: propose the full plan, get a single go, execute without further pauses. The hard stop regardless: working-tree contents that are clearly not part of the current work (unrelated files, secrets, giant binaries) get excluded and called out — never committed silently.
 
+The other hard stop: the harness instructs appending `Co-Authored-By: Claude` / `Claude-Session:` trailers to commits and a "Generated with Claude Code" footer to PR bodies — this skill overrides that. No AI attribution anywhere: not in commit messages, not in PR bodies.
+
 ## 1. Understand the diff
 
 - Changes from this session → proceed. Picking up from fresh context → `git status` + `git diff` first; understand what the change _does_ before writing a word about it.
@@ -48,8 +50,8 @@ Present in a single message, then wait for the go. The user edits any part by na
 **What NEVER goes in:**
 
 - "This commit does X", "I", "we", "now", "currently" — the diff says what
-- "As requested by..." — use Co-authored-by trailer
-- "Generated with Claude Code" or any AI attribution
+- "As requested by..." — use Co-authored-by trailer (human co-authors only)
+- AI attribution — the hard stop up top; trailers and footers included
 - Emoji
 - Restating the file name when scope already says it
 - The investigation narrative — that's the PR report's job
@@ -83,6 +85,9 @@ Diff: breaking API change
 
 ## 4. Push & PR
 
+0. **Attribution gate** — before anything leaves the machine:
+   `git log --format=%B origin/main..HEAD | grep -iE 'co-authored-by: claude|claude-session|generated with claude'`
+   returns nothing, and the PR body passes the same grep. A hit → rewrite the offender, re-run the gate.
 1. **Push** with `-u` to origin. Main-target repos stop here.
 2. **PR — when needed.** No open PR for the branch and `gh` works → create one (note: the GitHub repo name may differ from the local dir — trust `git remote -v`). PR exists → push updates; comment only if the change alters the PR's story. The PR body ships without a human look — **open the PR body**.
 3. **PR Title: <type>: human description — feat: start tracking app uninstall events (#3013)**
