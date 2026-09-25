@@ -38,20 +38,38 @@ ln -s "$DOTFILES_DIR/ghostty_config" "$HOME/.config/ghostty/config"
 ln -s "$DOTFILES_DIR/zed/settings.json" "$HOME/.config/zed/settings.json"
 ln -s "$DOTFILES_DIR/btop/btop.conf" "$HOME/.config/btop/btop.conf"
 
-# restore claude code + codex state from the icloud backup (fresh machines only:
-# skipped once ~/.claude has transcripts, so it never overwrites live data)
+# restore claude code + codex from the icloud backup. runs only on a fresh
+# machine (no transcripts yet) or to resume an unfinished restore; a machine
+# that already has sessions is never touched.
 AGENTS_BACKUP="$HOME/Library/Mobile Documents/com~apple~CloudDocs/agents"
-if [ -d "$AGENTS_BACKUP/claude" ] && [ -z "$(ls -A "$HOME/.claude/projects" 2>/dev/null)" ]; then
-    echo "restoring claude code from icloud backup (may wait on icloud downloads)..."
-    brctl download "$AGENTS_BACKUP" 2>/dev/null || true
-    mkdir -p "$HOME/.claude"
-    rsync -a "$AGENTS_BACKUP/claude/" "$HOME/.claude/"
-    [ -f "$HOME/.claude.json" ] || cp "$AGENTS_BACKUP/claude.json" "$HOME/.claude.json"
-fi
-if [ -d "$AGENTS_BACKUP/codex" ] && [ -z "$(ls -A "$HOME/.codex/sessions" 2>/dev/null)" ]; then
-    echo "restoring codex from icloud backup..."
-    mkdir -p "$HOME/.codex"
-    rsync -a "$AGENTS_BACKUP/codex/" "$HOME/.codex/"
+RESTORE_PARTIAL="$HOME/.claude/.agents-restore-partial"
+RESTORE_DONE="$HOME/.claude/.agents-restore-complete"
+if [ ! -f "$RESTORE_DONE" ] && { [ -z "$(ls -A "$HOME/.claude/projects" 2>/dev/null)" ] || [ -f "$RESTORE_PARTIAL" ]; }; then
+    if [ -d "$HOME/Library/Mobile Documents/com~apple~CloudDocs" ]; then
+        echo "waiting for icloud to sync the agents backup (up to 10 min)..."
+        for _ in $(seq 1 120); do [ -f "$AGENTS_BACKUP/last-backup.txt" ] && break; sleep 5; done
+    fi
+    if [ -f "$AGENTS_BACKUP/last-backup.txt" ]; then
+        echo "restoring claude code + codex from icloud (downloads files as it goes)..."
+        mkdir -p "$HOME/.claude" "$HOME/.codex" && touch "$RESTORE_PARTIAL"
+        brctl download "$AGENTS_BACKUP" 2>/dev/null || true
+        # skip icloud conflict copies ("name 2.ext")
+        rsync -a --exclude '* [2-9]' --exclude '* [2-9].*' "$AGENTS_BACKUP/claude/" "$HOME/.claude/"
+        [ -d "$AGENTS_BACKUP/codex" ] && rsync -a --exclude '* [2-9]' --exclude '* [2-9].*' "$AGENTS_BACKUP/codex/" "$HOME/.codex/"
+        [ -f "$HOME/.claude.json" ] || cp "$AGENTS_BACKUP/claude.json" "$HOME/.claude.json"
+        want_claude=$(sed -n 's/^claude_transcripts=//p' "$AGENTS_BACKUP/last-backup.txt")
+        want_codex=$(sed -n 's/^codex_sessions=//p' "$AGENTS_BACKUP/last-backup.txt")
+        got_claude=$(find "$HOME/.claude/projects" -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' ')
+        got_codex=$(find "$HOME/.codex/sessions" -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' ')
+        if [ "$got_claude" -ge "${want_claude:-0}" ] && [ "$got_codex" -ge "${want_codex:-0}" ]; then
+            rm -f "$RESTORE_PARTIAL" && touch "$RESTORE_DONE"
+            echo "✅ restored $got_claude claude transcripts, $got_codex codex sessions"
+        else
+            echo "⚠️  restore incomplete: claude $got_claude/$want_claude, codex $got_codex/$want_codex — re-run setup.sh once icloud finishes syncing"
+        fi
+    else
+        echo "⚠️  no agents backup found in icloud drive — sign into icloud, let it sync, then re-run setup.sh"
+    fi
 fi
 
 # cmux agent hooks: claude code's are injected by cmux's wrapper automatically,
@@ -76,6 +94,9 @@ mkdir -p "$HOME/Library/LaunchAgents"
 launchctl bootout "gui/$(id -u)" "$PLIST" 2>/dev/null || true
 sed "s#__HOME__#$HOME#g" "$DOTFILES_DIR/launchd/com.psrth.agents-backup.plist" > "$PLIST"
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
+
+# google drive: start at login (sign-in and mirror folder are manual, see README)
+defaults write com.google.drivefs.settings AutoStartOnLogin -bool true
 
 # set default shell
 echo "(5) setting default shell..."
