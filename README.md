@@ -30,7 +30,12 @@ cd ~/.dotfiles
 - create symlinks for all dotfiles and agent skills
 - restore the last backup of claude code + codex sessions from icloud (fresh machines only)
 - set up cmux hooks for codex, and a daily 6am backup of agent sessions to icloud
+- set google drive to start at login
 - set zsh as the default shell
+
+**then, by hand:**
+- **google drive:** open the app, sign into your personal account, then settings → my drive → **mirror files** → set the folder to `~/Desktop/psrth`
+- **copper:** the one app not available via homebrew (see manual installs)
 
 ## features
 
