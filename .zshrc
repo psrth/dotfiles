@@ -88,22 +88,12 @@ nvm() { unfunction nvm; source "$NVM_DIR/nvm.sh"; nvm "$@"; }
 # cd utility (disabled: can interfere with automation tools)
 # alias cd="z"
 
-# cursor
-alias c="cursor ."
-
 # git
 alias g="git"
 
-# file system (using eza instead of ls)
-if command -v eza >/dev/null 2>&1; then
-  alias ls="eza --group-directories-first"
-  alias ll="eza --group-directories-first -lah"
-  alias lt="eza --group-directories-first --tree --level=2"
-else
-  alias ls="ls -lah"
-  alias ll="ls -lah"
-  alias lt="ls -lah --tree --level=2"
-fi
+# file system
+alias ll="ls -lah"
+alias lt="tree -L 2 --dirsfirst"
 
 # config management
 alias zconfig="open -e ~/.zshrc"
@@ -155,7 +145,7 @@ fi
 
 # zoxide (better cd)
 if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
+  eval "$(zoxide init zsh --cmd zd)"
 fi
 
 # syntax highlighting stays last so it wraps the widgets defined above
@@ -168,6 +158,3 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
-
-# opencode
-export PATH=/Users/psrth/.opencode/bin:$PATH
