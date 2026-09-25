@@ -1,7 +1,11 @@
 [user]
 	name = psrth
 	email = psrthsharma@gmail.com
-[http]
-	postBuffer = 157286400
-[credential]
-	helper = osxkeychain
+# github auth via gh (one token, managed by `gh auth login`). the empty helper
+# clears homebrew git's default osxkeychain helper for these hosts.
+[credential "https://github.com"]
+	helper =
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/opt/homebrew/bin/gh auth git-credential
