@@ -22,6 +22,11 @@ echo "(2) installing packages..."
 cd "$DOTFILES_DIR"
 brew bundle --quiet
 
+# node via nvm (brew installs nvm itself; nvm scripts aren't set -e safe)
+mkdir -p "$HOME/.nvm"
+( set +e; export NVM_DIR="$HOME/.nvm"; source /opt/homebrew/opt/nvm/nvm.sh
+  nvm install 24 >/dev/null && nvm alias default 24 >/dev/null && echo "node $(node -v) installed via nvm" ) || true
+
 # create directories
 echo "(3) creating directories..."
 mkdir -p "$HOME/.config/ghostty" "$HOME/.config/zed" "$HOME/.config/btop" "$HOME/.local/bin"

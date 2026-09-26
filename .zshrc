@@ -6,6 +6,9 @@
 # add ~/.local/bin to path before everything else so tools installed here
 # are found immediately by later sections. (like uv, bun, etc.)
 # -------------------------
+# keep PATH free of duplicates (nested shells re-add the same dirs)
+typeset -U path PATH
+
 export PATH="$HOME/.local/bin:$PATH"
 
 # -------------------------
@@ -74,7 +77,7 @@ export NVM_DIR="$HOME/.nvm"
 _nvm_node=($NVM_DIR/versions/node/*(Nn[-1]))
 [[ -n $_nvm_node ]] && export PATH="$_nvm_node/bin:$PATH"
 unset _nvm_node
-nvm() { unfunction nvm; source "$NVM_DIR/nvm.sh"; nvm "$@"; }
+nvm() { unfunction nvm; source /opt/homebrew/opt/nvm/nvm.sh; nvm "$@"; }  # brew-installed nvm
 
 # -------------------------
 # 6. ALIASES
