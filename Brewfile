@@ -42,7 +42,7 @@ brew "poppler"
 # misc
 brew "mole"
 brew "opencode"
-brew "openclaw/tap/gogcli"
+brew "openclaw/tap/gogcli", trusted: true  # third-party taps must be trusted
 
 # zsh
 brew "zsh"
