@@ -31,6 +31,7 @@ cd ~/.dotfiles
 - restore the last backup of claude code + codex sessions from icloud (fresh machines only)
 - set up cmux hooks for codex, and a daily 6am backup of agent sessions to icloud
 - set google drive to start at login
+- apply macos preferences (`macos.sh`)
 - set zsh as the default shell
 
 **then, by hand:**
@@ -51,6 +52,16 @@ cd ~/.dotfiles
 
 not available through homebrew or the app store:
 - copper (shadcn) — from its website
+
+## macos preferences
+
+`macos.sh` (run by `setup.sh`, safe to re-run) sets only what differs from the macos defaults:
+
+- **dock:** auto-hide, 51px icons, no recent apps, minimize into app icon, don't reorder spaces
+- **hot corners:** top-left + bottom-right show desktop, top-right notification center, bottom-left display sleep
+- **finder:** list view, new windows open the desktop, drives shown on the desktop
+- **trackpad:** fast tracking, physical click (no tap-to-click), two-finger right click
+- **desktop:** clicking the wallpaper doesn't reveal the desktop, no tiled window margins
 
 ## cloud sync
 

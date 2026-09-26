@@ -98,6 +98,9 @@ launchctl bootstrap "gui/$(id -u)" "$PLIST"
 # google drive: start at login (sign-in and mirror folder are manual, see README)
 defaults write com.google.drivefs.settings AutoStartOnLogin -bool true
 
+# macos preferences
+bash "$DOTFILES_DIR/macos.sh"
+
 # set default shell
 echo "(5) setting default shell..."
 if [ "$SHELL" != "$(which zsh)" ]; then
