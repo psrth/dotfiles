@@ -27,6 +27,10 @@ mkdir -p "$HOME/.nvm"
 ( set +e; export NVM_DIR="$HOME/.nvm"; source /opt/homebrew/opt/nvm/nvm.sh
   nvm install 24 >/dev/null && nvm alias default 24 >/dev/null && echo "node $(node -v) installed via nvm" ) || true
 
+# uv shell completions (cached; .zshrc loads ~/.zfunc before compinit)
+mkdir -p "$HOME/.zfunc"
+uv generate-shell-completion zsh > "$HOME/.zfunc/_uv" 2>/dev/null || true
+
 # create directories
 echo "(3) creating directories..."
 mkdir -p "$HOME/.config/ghostty" "$HOME/.config/zed" "$HOME/.config/btop" "$HOME/.local/bin"
